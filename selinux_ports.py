@@ -10,10 +10,11 @@ highest_port = 65535
 def main():
     raw_output = _get_raw_output()
     first_pass = _filter_tcp_ports(raw_output)
+    del raw_output
     second_pass = _split_up_sequences(first_pass)
-    third_pass = _expand_ranges(second_pass)
-
-    print(third_pass)
+    del first_pass
+    reserved_ports = sorted(_expand_ranges(second_pass))
+    del second_pass
 
 
 def _get_raw_output():
