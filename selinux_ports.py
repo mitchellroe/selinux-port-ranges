@@ -3,26 +3,15 @@
 import re
 import subprocess
 
+lowest_port = 9001
+highest_port = 65535
+
 
 def main():
     raw_output = _get_raw_output()
     first_pass = _filter_tcp_ports(raw_output)
     second_pass = _split_up_sequences(first_pass)
-
-    # The third and final stage: port ranges.
-    third_pass = []
-    for entry in second_pass:
-        my_range = entry.split('-')
-        if len(my_range) == 1:
-            port_number = str(my_range[0])
-            if port_number not in third_pass:
-                third_pass.append(port_number)
-        else:
-            low = int(my_range[0])
-            high = int(my_range[1]) + 1
-            for port_number in range(low, high):
-                if str(port_number) not in third_pass:
-                    third_pass.append(str(port_number))
+    third_pass = _expand_ranges(second_pass)
 
     print(third_pass)
 
@@ -64,6 +53,35 @@ def _split_up_sequences(my_array):
             if str(port_field) not in retval:
                 retval.append(str(port_field))
     return retval
+
+
+def _expand_ranges(my_array):
+    """
+    Expand the ranges denoted with a '-' and trim off any that are outside the
+    range set above.
+    """
+    # The third and final stage: port ranges.
+    retval = []
+    for entry in my_array:
+        port_range = entry.split('-')
+        if len(port_range) == 1:
+            port_number = int(port_range[0])
+            if _is_within_range(port_number) and port_number not in retval:
+                retval.append(port_number)
+        else:
+            low = int(port_range[0])
+            high = int(port_range[1]) + 1
+            for port_number in range(low, high):
+                if _is_within_range(port_number) and port_number not in retval:
+                    retval.append(port_number)
+    return retval
+
+
+def _is_within_range(port_number):
+    if port_number >= lowest_port and port_number <= highest_port:
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
