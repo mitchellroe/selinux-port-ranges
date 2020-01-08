@@ -16,6 +16,19 @@ def main():
     reserved_ports = sorted(_expand_ranges(second_pass))
     del second_pass
 
+    for x in range(0, len(reserved_ports)):
+        y = x + 1
+        if y == len(reserved_ports) - 1:
+            break
+        current_port = reserved_ports[x]
+        next_port = reserved_ports[y]
+        if next_port == current_port + 1:
+            continue
+        else:
+            print("low: " + str(current_port))
+            print("high: " + str(next_port))
+            print()
+
 
 def _get_raw_output():
     """Get the raw output."""
