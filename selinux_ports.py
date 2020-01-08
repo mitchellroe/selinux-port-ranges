@@ -12,18 +12,19 @@ def main():
     # The third and final stage: port ranges.
     third_pass = []
     for entry in second_pass:
-        # This seems to be problematic.
-        for my_range in entry.split("-"):
-            if len(my_range) == 1:
-                port_number = my_range[0]
-                if port_number not in third_pass:
-                    third_pass.append(port_number)
-            else:
-                low = int(my_range[0])
-                high = int(my_range[0]) + 1
-                for port_number in range(low, high):
-                    if port_number not in third_pass:
-                        third_pass.append(port_number)
+        my_range = entry.split('-')
+        if len(my_range) == 1:
+            port_number = str(my_range[0])
+            if port_number not in third_pass:
+                third_pass.append(port_number)
+        else:
+            low = int(my_range[0])
+            high = int(my_range[1]) + 1
+            for port_number in range(low, high):
+                if str(port_number) not in third_pass:
+                    third_pass.append(str(port_number))
+
+    print(third_pass)
 
 
 def _get_raw_output():
@@ -49,7 +50,7 @@ def _filter_tcp_ports(my_array):
     for entry in my_array:
         parsed_line = entry.split(' ')
         protocol = parsed_line[1]
-        port_number = parsed_line[2]
+        port_number = str(parsed_line[2])
         if protocol == 'tcp':
             retval.append(port_number)
     return retval
@@ -60,8 +61,8 @@ def _split_up_sequences(my_array):
     retval = []
     for entry in my_array:
         for port_field in entry.split('|'):
-            if port_field not in retval:
-                retval.append(port_field)
+            if str(port_field) not in retval:
+                retval.append(str(port_field))
     return retval
 
 
