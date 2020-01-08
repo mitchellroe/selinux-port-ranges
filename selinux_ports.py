@@ -75,7 +75,6 @@ def _filter_tcp_ports(my_array):
 
 def _split_up_sequences(my_array):
     """Split up lines with more than one port."""
-    # TODO: This doesn't seem to include non-ranged port numbers.
     retval = []
     for entry in my_array:
         for port_field in entry.split('|'):
@@ -85,6 +84,7 @@ def _split_up_sequences(my_array):
 
 
 def _expand_ranges(my_array):
+    # TODO: This doesn't seem to include non-ranged port numbers.
     """
     Expand the ranges denoted with a '-' and trim off any that are outside the
     range set above.
