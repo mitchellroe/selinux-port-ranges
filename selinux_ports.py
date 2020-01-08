@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+# TODO: Instead of checking whether the numbers are already in the intermediate
+# arrays, use sets instead.  These will only add if the number is not already
+# present.
+
+
 import re
 import subprocess
 
@@ -92,6 +97,9 @@ def _expand_ranges(my_array):
     # The third and final stage: port ranges.
     retval = []
     for entry in my_array:
+        # You can use str.find to search for '-'.  If it returns -1, then it's
+        # not in the string and you can just compare it against your acceptable
+        # port ranges.
         port_range = entry.split('-')
         if len(port_range) == 1:
             port_number = int(port_range[0])
