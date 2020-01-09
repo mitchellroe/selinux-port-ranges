@@ -14,25 +14,11 @@ highest_port = 65535
 
 def main():
     raw_output = _get_raw_output()
-    _print_first_few(raw_output)
-    print()
-
     first_pass = _filter_tcp_ports(raw_output)
-    _print_first_few(first_pass)
-    print()
-
     del raw_output
-
     second_pass = _split_up_sequences(first_pass)
-    _print_first_few(second_pass)
-    print()
-
     del first_pass
-
     reserved_ports = _expand_ranges(second_pass)
-    _print_first_few(reserved_ports)
-    print()
-
     del second_pass
 
     # for x in range(0, len(reserved_ports)):
@@ -50,7 +36,10 @@ def main():
 
 
 def _get_raw_output():
-    """Get the raw output."""
+    """
+    Return the output of `semanage port -l` (without the header row)
+    as an array.
+    """
     raw_output = subprocess.check_output(['semanage', 'port', '-l'],
                                          universal_newlines=True)
     # Replace all consecutive spaces with a single space.
@@ -89,12 +78,12 @@ def _split_up_sequences(my_array):
 
 
 def _expand_ranges(my_array):
-    # TODO: This doesn't seem to include non-ranged port numbers.
     """
     Expand the ranges denoted with a '-' and trim off any that are outside the
     range set above.
     """
-    # The third and final stage: port ranges.
+    # TODO: This doesn't seem to include non-ranged port numbers.
+    # TODO: This function tries to accomplish too much.  Split it up.
     retval = []
     for entry in my_array:
         # You can use str.find to search for '-'.  If it returns -1, then it's
@@ -102,15 +91,15 @@ def _expand_ranges(my_array):
         # port ranges.
         port_range = entry.split('-')
         if len(port_range) == 1:
-            port_number = int(port_range[0])
-            if _is_within_range(port_number) and port_number not in retval:
+            port_number = str(port_range[0])
+            if port_number not in retval:
                 retval.append(port_number)
         else:
             low = int(port_range[0])
             high = int(port_range[1]) + 1
             for port_number in range(low, high):
-                if _is_within_range(port_number) and port_number not in retval:
-                    retval.append(port_number)
+                if port_number not in retval:
+                    retval.append(str(port_number))
     return retval
 
 
