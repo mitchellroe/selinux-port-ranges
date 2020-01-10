@@ -110,10 +110,5 @@ def _is_within_range(port_number):
         return False
 
 
-def _print_first_few(my_array):
-    for i in range(0, 15):
-        print(str(my_array[i]))
-
-
 if __name__ == '__main__':
     main()
