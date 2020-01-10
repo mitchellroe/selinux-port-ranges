@@ -49,6 +49,16 @@ class SelinuxPortsCase(unittest.TestCase):
         retval = selinux_ports._expand_ranges(test_val)
         self.assertEqual(retval, expected_val)
 
+    def test__is_within_range(self):
+        low = 9001
+        high = 65535
+        self.assertFalse(selinux_ports._is_within_range(9000))
+        self.assertTrue(selinux_ports._is_within_range(9001))
+        self.assertTrue(selinux_ports._is_within_range(9002))
+
+        self.assertTrue(selinux_ports._is_within_range(65534))
+        self.assertTrue(selinux_ports._is_within_range(65535))
+        self.assertFalse(selinux_ports._is_within_range(65536))
 
 def main():
     unittest.main()
