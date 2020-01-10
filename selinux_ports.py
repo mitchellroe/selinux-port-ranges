@@ -13,26 +13,26 @@ highest_port = 65535
 
 
 def main():
-    raw_output = _get_raw_output()
-    first_pass = _filter_tcp_ports(raw_output)
-    del raw_output
-    second_pass = _split_up_sequences(first_pass)
-    del first_pass
-    reserved_ports = _expand_ranges(second_pass)
-    del second_pass
-
-    # for x in range(0, len(reserved_ports)):
-    #     y = x + 1
-    #     if y == len(reserved_ports) - 1:
-    #         break
-    #     current_port = reserved_ports[x]
-    #     next_port = reserved_ports[y]
-    #     if next_port == current_port + 1:
-    #         continue
-    #     else:
-    #         print("low: " + str(current_port))
-    #         print("high: " + str(next_port))
-    #         print()
+    reserved_ports = _get_raw_output()
+    reserved_ports = _filter_tcp_ports(reserved_ports)
+    reserved_ports = _split_up_sequences(reserved_ports)
+    reserved_ports = _expand_ranges(reserved_ports)
+    # Remove duplicate entries by casting the array to a set.
+    reserved_ports = set(reserved_ports)
+    # Convert it back to a list.
+    reserved_ports = list(reserved_ports)
+    # Loop over the list and do a couple things:
+    #   1. Remove items that are outside the desired range.
+    #   2. Cast all the remaining elements to integers.
+    my_list = []
+    for reserved_port in reserved_ports:
+        if int(reserved_port) < lowest_port or int(reserved_port) > highest_port:
+            continue
+        else:
+            my_list.append(int(reserved_port))
+    # Sort the list.
+    reserved_ports = sorted(my_list)
+    print(reserved_ports)
 
 
 def _get_raw_output():
