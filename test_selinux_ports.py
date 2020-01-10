@@ -12,7 +12,7 @@ class SelinuxPortsCase(unittest.TestCase):
         # function, so we'll just test that we got a list back and
         # that it's got more than one element.
         self.assertIsInstance(raw_output, list)
-        self.assertTrue(len(raw_output) >= 1)
+        self.assertTrue(len(raw_output) >= 3)
 
     def test__filter_tcp_ports(self):
         """
